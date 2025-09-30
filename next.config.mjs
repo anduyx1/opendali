@@ -24,6 +24,15 @@ const nextConfig = {
         },
       };
     }
+
+    // Improve module resolution reliability
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+      path: false,
+      crypto: false,
+    };
+
     return config;
   },
   // Add cache busting for better reliability
