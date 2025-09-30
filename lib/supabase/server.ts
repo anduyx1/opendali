@@ -3,12 +3,12 @@ import { cookies } from "next/headers"
 import "server-only"
 
 export function createClient() {
-  const supabaseUrl = process.env.SUPABASE_URL
-  const supabaseAnonKey = process.env.SUPABASE_ANON_KEY
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   if (!supabaseUrl || !supabaseAnonKey) {
     console.warn("Supabase environment variables are not configured for server. Using mock data.")
-    return null
+    throw new Error("Supabase environment variables not configured")
   }
 
   return createServerClient(supabaseUrl, supabaseAnonKey, {

@@ -1,9 +1,23 @@
 "use client"
 
 import * as React from "react"
-import { Drawer as DrawerPrimitive } from "vaul"
+// import { Drawer as DrawerPrimitive } from "vaul"
 
 import { cn } from "@/lib/utils"
+
+// Temporary placeholder for Drawer components until vaul supports React 19
+const DrawerPrimitive = {
+  Root: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+  Trigger: ({ children, ...props }: any) => <button {...props}>{children}</button>,
+  Portal: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+  Overlay: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+  Content: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+  Header: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+  Footer: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+  Title: ({ children, ...props }: any) => <h2 {...props}>{children}</h2>,
+  Description: ({ children, ...props }: any) => <p {...props}>{children}</p>,
+  Close: ({ children, ...props }: any) => <button {...props}>{children}</button>,
+}
 
 const Drawer = ({
   shouldScaleBackground = true,
