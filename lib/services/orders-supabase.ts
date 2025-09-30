@@ -1,7 +1,7 @@
 "use server"
 
 import { unstable_noStore as noStore } from "next/cache"
-import { createClient } from "@/lib/supabase/server"
+import { createAdminClient as createClient } from "@/lib/supabase/admin"
 import { updateProductStock } from "./products"
 import { updateCustomerStats } from "./customers"
 import type { Order, OrderItem, CartItem } from "@/lib/types/database"

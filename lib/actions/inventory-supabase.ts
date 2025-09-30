@@ -2,7 +2,7 @@
 
 import { updateProductStock } from "@/lib/services/products"
 import { revalidatePath } from "next/cache"
-import { createClient } from "@/lib/supabase/server"
+import { createAdminClient as createClient } from "@/lib/supabase/admin"
 import type { GoodsReceipt, StockAdjustment } from "@/lib/types/database"
 
 export async function updateProductStockAction(productId: number, newQuantity: number, oldQuantity: number) {
