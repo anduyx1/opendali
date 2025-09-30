@@ -1,26 +1,10 @@
 import { NextResponse } from "next/server"
-import mysql from "@/lib/mysql"
+import { getCustomers } from "@/lib/services/customers"
 
 export async function GET() {
   try {
-    const connection = await mysql.getConnection()
-
-    const [rows] = await connection.execute(`
-      SELECT 
-        id,
-        name,
-        phone,
-        email,
-        address,
-        created_at,
-        updated_at
-      FROM customers 
-      ORDER BY name ASC
-    `)
-
-    connection.release()
-
-    return NextResponse.json(rows)
+    const customers = await getCustomers()
+    return NextResponse.json(customers)
   } catch (error) {
     console.error("Failed to fetch customers:", error)
     return NextResponse.json({ error: "Failed to fetch customers" }, { status: 500 })

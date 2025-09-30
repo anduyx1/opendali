@@ -1,27 +1,20 @@
 import { NextResponse } from "next/server"
-import mysql from "@/lib/mysql"
-import type { RowDataPacket } from "mysql2"
-
-interface SettingRow extends RowDataPacket {
-  key: string
-  value: string
-}
+import { createClient } from "@/lib/supabase/server"
 
 export async function GET() {
   try {
-    const connection = await mysql.getConnection()
+    const supabase = createClient()
 
-    const [rows] = await connection.execute(`
-      SELECT 
-        \`key\`,
-        value
-      FROM settings
-    `)
+    const { data: rows, error } = await supabase
+      .from('settings')
+      .select('key, value')
 
-    connection.release()
+    if (error) {
+      throw error
+    }
 
     const settings: Record<string, string> = {}
-    ;(rows as SettingRow[]).forEach((row) => {
+    rows?.forEach((row) => {
       settings[row.key] = row.value
     })
 
