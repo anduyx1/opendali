@@ -28,3 +28,4 @@ next-env.d.ts
 
 # SSL certificates (development only)
 /certs/
+.env
