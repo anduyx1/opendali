@@ -9,6 +9,27 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  webpack: (config, { dev, isServer }) => {
+    // Improve chunk loading reliability
+    if (!dev && !isServer) {
+      config.optimization.splitChunks = {
+        ...config.optimization.splitChunks,
+        cacheGroups: {
+          ...config.optimization.splitChunks.cacheGroups,
+          default: {
+            ...config.optimization.splitChunks.cacheGroups.default,
+            chunks: 'all',
+            enforce: true,
+          },
+        },
+      };
+    }
+    return config;
+  },
+  // Add cache busting for better reliability
+  generateBuildId: async () => {
+    return `build-${Date.now()}`;
+  },
 };
 
-export default nextConfig; // <-- Dùng export default thay vì module.exports
+export default nextConfig;
