@@ -28,6 +28,7 @@ import { useMobile } from "@/hooks/use-mobile"
 import { useSearchParams } from "next/navigation"
 import { IndexedDBService } from "@/lib/services/indexeddb"
 import { useNetworkStatus } from "@/hooks/use-network-status"
+import { Suspense } from "react"
 
 type View = "list" | "details"
 
@@ -53,7 +54,7 @@ type OrderWithOfflineStatus = Order & {
   server_order_number?: string
 }
 
-export default function OrdersPage() {
+function OrdersContent() {
   const { toast } = useToast()
   const isMobile = useMobile()
   const searchParams = useSearchParams()
@@ -792,5 +793,13 @@ export default function OrdersPage() {
         templateContent={receiptTemplateContent}
       />
     </main>
+  )
+}
+
+export default function OrdersPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <OrdersContent />
+    </Suspense>
   )
 }
