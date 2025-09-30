@@ -20,7 +20,7 @@ import { getOrders, getOrderById, processReturnAndRefund } from "@/lib/services/
 import { getPrintTemplateByType } from "@/lib/actions/print-templates"
 import type { Order, Customer } from "@/lib/types/database"
 import { useToast } from "@/hooks/use-toast"
-import { Loader2, Search, ArrowLeft, Printer } from "lucide-react"
+import { Loader as Loader2, Search, ArrowLeft, Printer } from "lucide-react"
 import { format } from "date-fns"
 import { vi } from "date-fns/locale"
 import ReceiptModal from "@/app/components/receipt-modal"
