@@ -1,0 +1,373 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 215 25% 27%;
+
+    --card: 210 40% 98%;
+    --card-foreground: 215 25% 27%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 27%;
+
+    --primary: 188 95% 37%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 160 84% 39%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 210 40% 98%;
+    --muted-foreground: 215 25% 27%;
+
+    --accent: 160 84% 39%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 13% 91%;
+    --input: 210 40% 98%;
+    --ring: 188 95% 37%;
+
+    --radius: 0.5rem;
+
+    /* Enhanced sidebar tokens for better theme support */
+    --sidebar: 188 95% 37%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 188 95% 37%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 160 84% 39%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 188 85% 45%;
+    --sidebar-ring: 188 95% 37%;
+
+    /* Enhanced chart colors for dynamic theming */
+    --chart-1: 188 95% 37%;
+    --chart-2: 160 84% 39%;
+    --chart-3: 43 96% 56%;
+    --chart-4: 0 84% 60%;
+    --chart-5: 262 83% 58%;
+  }
+
+  /* Enhanced dark mode variables */
+  .dark,
+  .dark-theme {
+    --background: 215 25% 27%;
+    --foreground: 0 0% 100%;
+
+    --card: 215 25% 27%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 215 25% 27%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 0 0% 100%;
+    --primary-foreground: 215 25% 27%;
+
+    --secondary: 215 19% 35%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 215 19% 35%;
+    --muted-foreground: 217 10% 65%;
+
+    --accent: 215 19% 35%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 215 19% 35%;
+    --input: 215 19% 35%;
+    --ring: 216 34% 84%;
+
+    --sidebar: 188 95% 37%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 188 95% 37%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 160 84% 39%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 188 85% 45%;
+    --sidebar-ring: 216 34% 84%;
+
+    --chart-1: 188 95% 37%;
+    --chart-2: 160 84% 39%;
+    --chart-3: 43 96% 56%;
+    --chart-4: 0 84% 60%;
+    --chart-5: 262 83% 58%;
+  }
+
+  /* Add light theme class for explicit theming */
+  .light-theme {
+    /* Inherit from :root */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Thêm CSS class ios-standalone để handle Safari UI hiding an toàn */
+.ios-standalone {
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+/* Sửa CSS để cho phép scroll bình thường */
+/* Global mobile fullscreen support */
+@media (max-width: 768px) {
+  html,
+  body {
+    min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height */
+    overflow-x: hidden;
+  }
+
+  /* Tự động áp dụng safe area cho mobile */
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* iOS Safari fullscreen support */
+@supports (-webkit-touch-callout: none) {
+  .ios-fullscreen {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+  }
+
+  /* Tự động áp dụng cho tất cả container trên iOS */
+  @media (max-width: 768px) {
+    html,
+    body,
+    #__next,
+    main {
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+    }
+  }
+}
+
+/* Safe area support cho iPhone với notch */
+@supports (padding: max(0px)) {
+  .safe-area-inset-top {
+    padding-top: max(1rem, env(safe-area-inset-top));
+  }
+
+  .safe-area-inset-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
+  .safe-area-inset-left {
+    padding-left: max(1rem, env(safe-area-inset-left));
+  }
+
+  .safe-area-inset-right {
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+}
+
+/* Enhanced utility classes for dynamic theming */
+@layer utilities {
+  .bg-sidebar {
+    background-color: hsl(var(--sidebar));
+  }
+
+  .text-sidebar-foreground {
+    color: hsl(var(--sidebar-foreground));
+  }
+
+  .text-sidebar-foreground\/80 {
+    color: hsl(var(--sidebar-foreground) / 0.8);
+  }
+
+  .text-sidebar-foreground\/70 {
+    color: hsl(var(--sidebar-foreground) / 0.7);
+  }
+
+  .text-sidebar-primary {
+    color: hsl(var(--sidebar-primary));
+  }
+
+  .border-sidebar-border {
+    border-color: hsl(var(--sidebar-border));
+  }
+
+  .hover\:text-sidebar-foreground:hover {
+    color: hsl(var(--sidebar-foreground));
+  }
+
+  .hover\:text-sidebar-primary:hover {
+    color: hsl(var(--sidebar-primary));
+  }
+
+  /* Add chart color utilities for dynamic theming */
+  .bg-chart-1 {
+    background-color: hsl(var(--chart-1));
+  }
+  .bg-chart-2 {
+    background-color: hsl(var(--chart-2));
+  }
+  .bg-chart-3 {
+    background-color: hsl(var(--chart-3));
+  }
+  .bg-chart-4 {
+    background-color: hsl(var(--chart-4));
+  }
+  .bg-chart-5 {
+    background-color: hsl(var(--chart-5));
+  }
+
+  .text-chart-1 {
+    color: hsl(var(--chart-1));
+  }
+  .text-chart-2 {
+    color: hsl(var(--chart-2));
+  }
+  .text-chart-3 {
+    color: hsl(var(--chart-3));
+  }
+  .text-chart-4 {
+    color: hsl(var(--chart-4));
+  }
+  .text-chart-5 {
+    color: hsl(var(--chart-5));
+  }
+
+  /* Add smooth transitions for theme changes */
+  .theme-transition {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+
+  .theme-transition * {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+
+  /* Touch-friendly interactions */
+  .touch-manipulation {
+    touch-action: manipulation;
+  }
+
+  /* Prevent zoom on input focus */
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
+  /* Custom slide-up animation for MobileNav */
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out forwards;
+  }
+}
+
+/* Điều chỉnh CSS để cho phép scroll bình thường */
+/* Chỉ ẩn Safari browser UI khi ở standalone mode (Add to Home Screen) */
+@media all and (display-mode: standalone) {
+  /* Sử dụng viewport units để tránh Safari UI */
+  html {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    /* Cho phép scroll bình thường */
+    overflow-y: auto;
+  }
+
+  /* Loại bỏ overscroll-behavior-y để cho phép scroll */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* CSS đặc biệt để ẩn Safari navigation bar trên iOS */
+@supports (-webkit-touch-callout: none) {
+  @media (max-width: 768px) and (display-mode: standalone) {
+    /* Chỉ điều chỉnh viewport, không lock scroll */
+    html {
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    }
+
+    body {
+      -webkit-overflow-scrolling: touch;
+      /* Không dùng position: fixed để giữ app navigation hoạt động */
+      min-height: 100vh;
+      min-height: 100dvh;
+      /* Đảm bảo có thể scroll */
+      overflow-y: auto;
+    }
+
+    /* Ngăn Safari navigation xuất hiện khi tap bottom */
+    body::after {
+      content: "";
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: env(safe-area-inset-bottom, 0px);
+      background: transparent;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* Đảm bảo app navigation components vẫn hoạt động */
+    nav,
+    header,
+    [role="navigation"],
+    .mobile-nav,
+    .header {
+      position: relative !important;
+      z-index: 1000 !important;
+    }
+  }
+}
+
+/* Ẩn scroll bars trên iOS */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Chỉ disable tap highlight và touch callout, giữ lại scroll */
+/* Thêm smooth scrolling và touch behaviors */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+/* Allow text selection và user interaction cho content */
+input,
+textarea,
+[contenteditable],
+p,
+span,
+div {
+  -webkit-user-select: auto;
+  user-select: auto;
+}
