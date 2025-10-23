@@ -1,15 +1,7 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
-import { logPoolStatus } from "@/lib/mysql/client"
 
 export function middleware(request: NextRequest) {
-  // Tạm thời tắt logging để tránh spam
-  // Log pool status on connection errors
-  // if (request.nextUrl.pathname.includes('/api/') && request.method === 'GET') {
-  //   // Log pool status for API requests that might cause connection issues
-  //   logPoolStatus()
-  // }
-  
   return NextResponse.next()
 }
 

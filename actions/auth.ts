@@ -3,7 +3,7 @@
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 import bcrypt from "bcryptjs"
-import { getDbConnection } from "@/lib/mysql/client"
+import { createClient } from "@/lib/supabase/server"
 
 export async function loginUser(formData: FormData) {
   const email = formData.get("email") as string
@@ -13,19 +13,24 @@ export async function loginUser(formData: FormData) {
     return { error: "Vui lòng nhập email và mật khẩu." }
   }
 
-  let connection
   try {
-    connection = await getDbConnection()
-    const [rows]: any = await connection.execute(
-      "SELECT id, email, username, full_name, password_hash FROM users WHERE email = ?",
-      [email],
-    )
+    const supabase = createClient()
+    const { data: users, error: queryError } = await supabase
+      .from("users")
+      .select("id, email, username, full_name, password_hash")
+      .eq("email", email)
+      .maybeSingle()
 
-    if (rows.length === 0) {
+    if (queryError) {
+      console.error("Lỗi truy vấn database:", queryError)
+      return { error: "Đã xảy ra lỗi trong quá trình đăng nhập. Vui lòng thử lại." }
+    }
+
+    if (!users) {
       return { error: "Email hoặc mật khẩu không đúng." }
     }
 
-    const user = rows[0]
+    const user = users
     const passwordMatch = await bcrypt.compare(password, user.password_hash)
 
     if (passwordMatch) {
@@ -46,8 +51,6 @@ export async function loginUser(formData: FormData) {
     }
     console.error("Lỗi đăng nhập:", error)
     return { error: "Đã xảy ra lỗi trong quá trình đăng nhập. Vui lòng thử lại." }
-  } finally {
-    if (connection) connection.release()
   }
 }
 
@@ -69,42 +72,43 @@ export async function registerUser(formData: FormData) {
     return { error: "Mật khẩu phải có ít nhất 6 ký tự." }
   }
 
-  let connection
   try {
-    connection = await getDbConnection()
-
+    const supabase = createClient()
     const username = email.split("@")[0] + Math.floor(Math.random() * 1000)
     const userId = `USR${Date.now()}`
 
-    const [existingUsers]: any = await connection.execute("SELECT id FROM users WHERE email = ? OR username = ?", [
-      email,
-      username,
-    ])
-    if (existingUsers.length > 0) {
-      // Check if email exists
-      const [emailExists]: any = await connection.execute("SELECT id FROM users WHERE email = ?", [email])
-      if (emailExists.length > 0) {
-        return { error: "Email này đã được đăng ký. Vui lòng sử dụng email khác." }
-      }
-      // Check if username exists (though we generate it, good to have a fallback)
-      const [usernameExists]: any = await connection.execute("SELECT id FROM users WHERE username = ?", [username])
-      if (usernameExists.length > 0) {
-        return { error: "Tên người dùng này đã được đăng ký. Vui lòng thử lại." }
-      }
-      // Fallback for general existing user
-      return { error: "Tài khoản đã tồn tại với thông tin này. Vui lòng đăng nhập." }
+    const { data: existingUser } = await supabase
+      .from("users")
+      .select("id")
+      .eq("email", email)
+      .maybeSingle()
+
+    if (existingUser) {
+      return { error: "Email này đã được đăng ký. Vui lòng sử dụng email khác." }
     }
 
     const hashedPassword = await bcrypt.hash(password, 10)
     const defaultRoleId = 4
 
-    await connection.execute(
-      "INSERT INTO users (user_id, username, full_name, email, password_hash, role_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())",
-      [userId, username, fullName, email, hashedPassword, defaultRoleId],
-    )
+    const { data: newUser, error: insertError } = await supabase
+      .from("users")
+      .insert({
+        user_id: userId,
+        username,
+        full_name: fullName,
+        email,
+        password_hash: hashedPassword,
+        role_id: defaultRoleId,
+      })
+      .select("id")
+      .single()
 
-    const [newUsers]: any = await connection.execute("SELECT id FROM users WHERE email = ?", [email])
-    const newUserId = newUsers[0].id
+    if (insertError || !newUser) {
+      console.error("Lỗi khi tạo tài khoản:", insertError)
+      return { error: "Đã xảy ra lỗi trong quá trình đăng ký. Vui lòng thử lại." }
+    }
+
+    const newUserId = newUser.id
 
     const cookieStore = await cookies()
     cookieStore.set("user_authenticated", newUserId.toString(), {
@@ -121,8 +125,6 @@ export async function registerUser(formData: FormData) {
     }
     console.error("Lỗi đăng ký:", error)
     return { error: "Đã xảy ra lỗi trong quá trình đăng ký. Vui lòng thử lại." }
-  } finally {
-    if (connection) connection.release()
   }
 }
 
@@ -140,21 +142,22 @@ export async function getCurrentUser() {
     return null
   }
 
-  let connection
   try {
-    connection = await getDbConnection()
-    const [rows]: any = await connection.execute(
-      "SELECT id, user_id, username, full_name, email, avatar_url, role_id FROM users WHERE id = ?",
-      [Number.parseInt(userId)],
-    )
-    if (rows.length > 0) {
-      return rows[0]
+    const supabase = createClient()
+    const { data: user, error } = await supabase
+      .from("users")
+      .select("id, user_id, username, full_name, email, avatar_url, role_id")
+      .eq("id", Number.parseInt(userId))
+      .maybeSingle()
+
+    if (error) {
+      console.error("Lỗi lấy thông tin người dùng:", error)
+      return null
     }
-    return null
+
+    return user
   } catch (error) {
     console.error("Lỗi lấy thông tin người dùng:", error)
     return null
-  } finally {
-    if (connection) connection.release()
   }
 }
